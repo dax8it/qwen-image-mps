@@ -706,7 +706,7 @@ def load_gguf_pipeline(quantization: str, device, torch_dtype, edit_mode=False):
                 gguf_path,
                 quantization_config=quantization_config,
                 torch_dtype=torch_dtype,
-                config="Qwen/Qwen-Image-2512-MPS",  # Use config from the original model
+                config="Qwen/Qwen-Image-2512",  # Use config from the original model
                 subfolder="transformer",  # Specify the transformer subfolder
             )
 
@@ -714,7 +714,7 @@ def load_gguf_pipeline(quantization: str, device, torch_dtype, edit_mode=False):
 
             # Create pipeline with quantized transformer
             pipeline = DiffusionPipeline.from_pretrained(
-                "Qwen/Qwen-Image-2512-MPS",
+                "Qwen/Qwen-Image-2512",
                 transformer=transformer,
                 torch_dtype=torch_dtype,
             )
@@ -919,7 +919,7 @@ def generate_image(args):
     try:
         yield emit_event(GenerationStep.INIT)
 
-        model_name = "Qwen/Qwen-Image-2512-MPS"
+        model_name = "Qwen/Qwen-Image-2512"
         device, torch_dtype = get_device_and_dtype()
 
         yield emit_event(GenerationStep.LOADING_MODEL)
@@ -1176,14 +1176,14 @@ def edit_image(args) -> None:
             print("GGUF models for editing may not be available yet.")
             print("Falling back to standard edit model...")
             pipeline = QwenImageEditPipeline.from_pretrained(
-                "Qwen/Qwen-Image-Edit-2512-MPS", torch_dtype=torch_dtype
+                "Qwen/Qwen-Image-Edit-2511", torch_dtype=torch_dtype
             )
             pipeline = pipeline.to(device)
     else:
         # Load the standard image editing pipeline
         print("Loading Qwen-Image-Edit model for image editing...")
         pipeline = QwenImageEditPipeline.from_pretrained(
-            "Qwen/Qwen-Image-Edit-2512-MPS", torch_dtype=torch_dtype
+            "Qwen/Qwen-Image-Edit-2511", torch_dtype=torch_dtype
         )
         pipeline = pipeline.to(device)
 
