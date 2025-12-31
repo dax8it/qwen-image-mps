@@ -152,24 +152,26 @@ def get_lora_path(ultra_fast=False, edit_mode=False):
     - Then fetch the latest from the Hub (without forcing) which will reuse cache
       if up-to-date, or download a newer snapshot if the remote changed.
     - Return the final resolved local path.
+    
+    Updated to use Qwen-Image-2512-Lightning repository for compatibility with Qwen-Image-2512 model.
     """
 
     if edit_mode:
-        # Use the new Edit Lightning LoRA for editing
-        filename = "Qwen-Image-Edit-Lightning-8steps-V1.0-bf16.safetensors"
+        # Use the new Edit Lightning LoRA for Qwen-Image-2512
+        filename = "Qwen-Image-2512-Edit-Lightning-8steps-V1.0-bf16.safetensors"
         version = "Edit v1.0 (8-steps)"
     elif ultra_fast:
-        filename = "Qwen-Image-Lightning-4steps-V1.0-bf16.safetensors"
+        filename = "Qwen-Image-2512-Lightning-4steps-V1.0-bf16.safetensors"
         version = "v1.0 (4-steps)"
     else:
-        filename = "Qwen-Image-Lightning-8steps-V1.1-bf16.safetensors"
+        filename = "Qwen-Image-2512-Lightning-8steps-V1.1-bf16.safetensors"
         version = "v1.1 (8-steps)"
 
     try:
         cached_path = None
         try:
             cached_path = hf_hub_download(
-                repo_id="lightx2v/Qwen-Image-Lightning",
+                repo_id="lightx2v/Qwen-Image-2512-Lightning",
                 filename=filename,
                 repo_type="model",
                 local_files_only=True,
@@ -179,7 +181,7 @@ def get_lora_path(ultra_fast=False, edit_mode=False):
 
         # Resolve latest from Hub; will reuse cache if fresh, or download newer
         latest_path = hf_hub_download(
-            repo_id="lightx2v/Qwen-Image-Lightning",
+            repo_id="lightx2v/Qwen-Image-2512-Lightning",
             filename=filename,
             repo_type="model",
         )
@@ -704,7 +706,7 @@ def load_gguf_pipeline(quantization: str, device, torch_dtype, edit_mode=False):
                 gguf_path,
                 quantization_config=quantization_config,
                 torch_dtype=torch_dtype,
-                config="Qwen/Qwen-Image",  # Use config from the original model
+                config="Qwen/Qwen-Image-2512",  # Use config from the original model
                 subfolder="transformer",  # Specify the transformer subfolder
             )
 
@@ -712,7 +714,7 @@ def load_gguf_pipeline(quantization: str, device, torch_dtype, edit_mode=False):
 
             # Create pipeline with quantized transformer
             pipeline = DiffusionPipeline.from_pretrained(
-                "Qwen/Qwen-Image",
+                "Qwen/Qwen-Image-2512",
                 transformer=transformer,
                 torch_dtype=torch_dtype,
             )
@@ -917,7 +919,7 @@ def generate_image(args):
     try:
         yield emit_event(GenerationStep.INIT)
 
-        model_name = "Qwen/Qwen-Image"
+        model_name = "Qwen/Qwen-Image-2512"
         device, torch_dtype = get_device_and_dtype()
 
         yield emit_event(GenerationStep.LOADING_MODEL)
@@ -1174,14 +1176,14 @@ def edit_image(args) -> None:
             print("GGUF models for editing may not be available yet.")
             print("Falling back to standard edit model...")
             pipeline = QwenImageEditPipeline.from_pretrained(
-                "Qwen/Qwen-Image-Edit", torch_dtype=torch_dtype
+                "Qwen/Qwen-Image-Edit-2511", torch_dtype=torch_dtype
             )
             pipeline = pipeline.to(device)
     else:
         # Load the standard image editing pipeline
         print("Loading Qwen-Image-Edit model for image editing...")
         pipeline = QwenImageEditPipeline.from_pretrained(
-            "Qwen/Qwen-Image-Edit", torch_dtype=torch_dtype
+            "Qwen/Qwen-Image-Edit-2511", torch_dtype=torch_dtype
         )
         pipeline = pipeline.to(device)
 
