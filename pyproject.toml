@@ -7,7 +7,7 @@ allow-direct-references = true
 
 [project]
 name = "qwen-image-mps"
-version = "0.5.0"
+version = "0.6.0"
 description = "Generate images with Qwen-Image on Apple Silicon (MPS) and other devices"
 readme = "README.md"
 license = "MIT"
@@ -48,6 +48,12 @@ dev = [
     "pre-commit",
     "pytest>=8.4.1",
 ]
+web = [
+    "fastapi>=0.112.0",
+    "uvicorn[standard]>=0.30.0",
+    "gradio>=4.44.0",
+    "python-multipart>=0.0.9",
+]
 
 [project.urls]
 Homepage = "https://github.com/ivanfioravanti/qwen-image-mps"
@@ -56,6 +62,7 @@ Issues = "https://github.com/ivanfioravanti/qwen-image-mps/issues"
 
 [project.scripts]
 qwen-image-mps = "qwen_image_mps.cli:main"
+qwen-image-mps-web = "qwen_image_mps.web:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/qwen_image_mps"]
