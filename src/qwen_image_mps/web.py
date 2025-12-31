@@ -544,8 +544,11 @@ def main():
     parser.add_argument("--api-only", action="store_true", help="Run API only (no Gradio UI)")
     args = parser.parse_args()
 
+    # Global app is already defined at module level
+    global app
+    
+    # Create and mount Gradio interface if not API-only
     if not args.api_only:
-        # Create and mount Gradio interface
         demo = create_gradio_interface()
         app = gr.mount_gradio_app(app, demo, path="/")
 
